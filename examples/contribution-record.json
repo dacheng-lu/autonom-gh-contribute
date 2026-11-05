@@ -1,0 +1,16 @@
+{
+  "state": "ready",
+  "type": "code",
+  "repository": "example-owner/example-repo",
+  "base_branch": "dev",
+  "base_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "problem": "Example: describe the observed problem and who it affects.",
+  "policy_source": "https://github.com/example-owner/example-repo/blob/dev/CONTRIBUTING.md",
+  "policy_checked_at": "2026-11-05",
+  "duplicate_status": "clear",
+  "duplicate_decision": "Example: document search and why this is not duplicate work.",
+  "authorization_scope": "Example: local preparation only; public PR requires authorization.",
+  "evidence": "Example: reproduction command and actual baseline output.",
+  "verification": "Example: command and output for the same case after the change.",
+  "limitations": "Example: full suite not run; explain why."
+}

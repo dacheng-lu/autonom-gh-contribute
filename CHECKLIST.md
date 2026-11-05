@@ -1,48 +1,27 @@
-# Checkliste vor dem Öffnen
+# Checkliste für einen Beitrag
 
-Kopierbar. Jede Zeile ist ein Beleg, keine Erinnerung — wenn du sie nicht mit einer Ausgabe belegen
-kannst, ist sie nicht erfüllt.
+Nicht zutreffende Punkte begründet als N/A markieren. Ein ausgefülltes Feld ist kein Beweis, dass die Aussage stimmt.
 
-## Vor der Arbeit
+## Recherche und Entscheidung
 
-- [ ] Zielrepo gelesen: `CONTRIBUTING`, `LICENSE`, `.github/workflows/`, Testkonfiguration
-- [ ] Der Code bestätigt die Lücke (nicht nur das README)
-- [ ] Drei Varianten durchgerechnet, die kleinste gewählt, Umfang notiert: ____ Zeilen
-- [ ] Freigabe des Kontoinhabers liegt vor
+- [ ] Problem und Nutzen aus eigenem Kontext belegt; passende Beitragsart gewählt.
+- [ ] Aktuelle Regeln mit Links und Datum geprüft: CONTRIBUTING, Lizenz, KI-Richtlinie, CLA/DCO und Vorlagen; unbekannte Regeln nicht als erlaubt behandelt.
+- [ ] Offene und geschlossene Issues/PRs auf Duplikate, Bearbeitung und Entscheidungen geprüft; Ergebnis dokumentiert.
+- [ ] Upstream-Standardbranch, tatsächlicher Zielbranch und dessen aktuelle SHA festgestellt.
+- [ ] Kleine passende Änderung gewählt; bei Bedarf zunächst Abstimmung mit Maintainern.
 
-## Beim Bauen
+## Vorbereitung und Prüfung
 
-- [ ] Branch von aktuellem `main`, `git log HEAD..origin/main` war leer
-- [ ] Test in der Konvention des Repos (gleicher Runner, gleicher Stil)
-- [ ] E2E-Aufruf über den echten Einstiegspunkt, nicht über die CLI
-- [ ] Scratch-Test gelöscht, `git status` zeigt nur die gewollten Dateien
+- [ ] Autorisierung für die jeweilige externe Aktion aus dem Kontext geklärt; fehlende Freigabe erst nach konkreter Vorbereitung einholen.
+- [ ] Bei Code: isolierter Arbeitsbereich und Originaldateien geschützt; Format- und Testkonventionen des Repos eingehalten.
+- [ ] Reproduktion und relevante Baseline mit Umgebung/Kommandos belegt oder Einschränkung erklärt.
+- [ ] Passender echter Einstiegspunkt geprüft; Tests und tatsächliche Ergebnisse für den aktuellen Stand notiert.
+- [ ] Diff, Attribution, Lizenz und Secrets geprüft; Text folgt der Projektvorlage.
 
-## Vor dem Commit
+## Veröffentlichung und Nachverfolgung
 
-- [ ] Baseline gemessen: ___ Tests auf `main`, ___ Tests auf dem Branch
-- [ ] `git show HEAD:<pfad> | grep -c $'\r'` ist 0 für jede geänderte Datei
-- [ ] Kein Token / kein `.env` / keine Debug-Ausgabe im Diff
-- [ ] `git remote -v` enthält keine Zugangsdaten
-
-## PR-Text
-
-- [ ] `## Problem` mit der echten Fehlermeldung
-- [ ] `## Measurement` als Tabelle, beide Läufe zitiert
-- [ ] `## Change` nummeriert, jede Änderung mit Grund
-- [ ] `## Compatibility` (was sich für wen ändert)
-- [ ] `## Not changed` (was bewusst ausgelassen wurde)
-- [ ] `## Verification` mit Kommandos und exakten Ergebniszeilen
-
-## Nach dem Öffnen
-
-- [ ] `GET /pulls/{n}` gelesen: `state`, `mergeable`, `head`
-- [ ] `GET /pulls/{n}/files` zeigt genau die beabsichtigten Dateien
-- [ ] CI-Status geprüft und benannt: gelaufen / `action_required` / nicht vorhanden
-- [ ] Falls `action_required`: im Text als „wartet auf Freigabe" benannt, nicht als Fehler
-
-## Pflichten (GitHub)
-
-- [ ] Volumen im Rahmen: ≤ 80/Minute, ≤ 500/Stunde content-generating
-- [ ] Ein Zweck pro PR, echter Projektbezug
-- [ ] Bei Dauer-Automatisierung: Machine Account oder GitHub App statt Personen-Konto
-- [ ] `Signed-off-by` nur, wenn die DCO-Zertifizierung inhaltlich zutrifft
+- [ ] Nur autorisierte Aktionen ausführen; richtige Quelle, Zielbranch und Head verwenden.
+- [ ] Nach Erstellung URL, Status, Base, Head-SHA und Dateiliste zurücklesen und vergleichen.
+- [ ] CI-Status für genau diese SHA benennen: erfolgreich, fehlgeschlagen, ausstehend, Freigabe nötig, nicht vorhanden oder unbekannt.
+- [ ] Nach Head-Änderung Prüfungen aktualisieren; Review-Fragen nur im autorisierten Rahmen beantworten.
+- [ ] Offen, geschlossen und gemergt unterscheiden; keine automatische Nachfrage oder unbestätigte Erfolgsmeldung.

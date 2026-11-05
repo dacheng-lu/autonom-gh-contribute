@@ -1,87 +1,46 @@
 # autonom-gh-contribute
 
-Ein Regelwerk für Agenten, die in einem **fremden** Repository einen Pull Request landen sollen —
-mit Beleg statt Behauptung.
+Ein Skill für nachvollziehbare Beiträge zu fremden GitHub-Projekten: von der Problemrecherche über reproduzierbare Tests bis zur überprüften Veröffentlichung und Review-Nachverfolgung.
 
-> **EN:** A procedure for AI agents contributing to third-party repositories. Fork, patch, test in the
-> repo's own convention, prove the change through the real entry point, publish measurements in the PR
-> text, then read the result back through the API. Ships with the policy duties that apply when the PR
-> is opened under a human account.
+**English:** A practical skill for evidence-based upstream contributions: investigate policies and duplicates, verify a focused change, publish only within the user's authorization, and read back the actual result. It also supports reports and documentation without a PR.
 
-## Warum es das gibt
+## Welche Beiträge?
 
-Am 03.11.2026 wurden vier Wege parallel recherchiert: Produkte, die selbst PRs öffnen; veröffentlichte
-Skill- und Workflow-Pakete; empirische Studien zu agentischen PRs; und GitHubs eigene Regeln.
-**Kein Projekt deckt alle acht Punkte unten ab.** Zwei fehlen durchgehend, auch bei den großen Anbietern:
+- **Problembericht:** reproduzierbarer Fehler, Umgebung und erwartetes Verhalten.
+- **Dokumentation oder Beispiel:** überprüfte Schritte und passende Änderungen.
+- **Test oder Evaluierung:** relevantes Fixture oder Regressionstest mit aussagekräftigem Ergebnis.
+- **Code:** kleiner begründeter Patch mit zum Projekt passender Verifikation.
 
-1. **Vorher/Nachher-Messwerte im PR-Text.** Alle schreiben eine Zusammenfassung, keiner schreibt
-   „14 Tests vorher, 18 nachher, beide Läufe zitiert".
-2. **Rücklesen des erzeugten PR über die API.** Niemand prüft, ob der PR tatsächlich enthält, was der
-   Agent behauptet hat.
+## Ablauf
 
-Beides ist genau der Teil, der Reviewern Zeit spart — und der einzige, den ein Agent ohne Vertrauensvorschuss
-liefern kann. Details und Quellen: [`docs/evidence.md`](docs/evidence.md).
+1. Ziel und Projektregeln prüfen: KI-Richtlinie, Lizenz, Vorlagen, CLA/DCO und bestehende Arbeiten.
+2. Tatsächlichen Upstream-Zielbranch und dessen SHA bestimmen; Ansatz und Autorisierung klären.
+3. In isolierter Umgebung arbeiten; passende Baseline und reale Einstiegspunkte prüfen.
+4. Ergebnis und Grenzen mit echten Belegen dokumentieren; Projektvorlage verwenden.
+5. Nur autorisierte öffentliche Aktionen ausführen und die veröffentlichte Änderung samt CI zur exakten Head-SHA zurücklesen.
+6. Review im autorisierten Rahmen begleiten und nach Änderungen erneut prüfen.
 
-## Die acht Punkte
+Die Details stehen in [SKILL.md](SKILL.md); die [Checkliste](CHECKLIST.md) ergänzt die menschliche Prüfung. Eine geprüfte Rekonstruktion und ein offener PR sind wertvolle Ergebnisse, auch wenn nichts gemergt wird.
 
-| # | Punkt | Woran man merkt, dass er fehlt |
-|---|---|---|
-| 1 | Fork und Branch automatisch | Der Agent committet in `main` |
-| 2 | Patch erzeugt | — (das können alle) |
-| 3 | Tests **in der Konvention des Zielrepos** | Neues Testframework, oder „Tests laufen" ohne Ausgabe |
-| 4 | PR-Text mit Messwerten | „Summary" statt Zahlen |
-| 5 | Verifikation durch Rücklesen (`GET /pulls/{n}`) | „PR erstellt" ohne Prüfung |
-| 6 | Ehrlicher CI-Status | „CI grün", obwohl der Lauf auf `action_required` steht |
-| 7 | Secret-Hygiene | Token in `.git/config`, `.env` im Commit |
-| 8 | Etikette / kein Spam | Zwei PRs für eine Sache, Nachfragen im Minutentakt |
+## Optional: lokalen Nachweis prüfen
 
-## Vier Gates, bevor eine Zeile entsteht
+Python 3 ist erforderlich; keine zusätzlichen Pakete oder Netzwerkzugriffe. Kopiere [examples/contribution-record.json](examples/contribution-record.json), passe es an und führe aus:
 
-1. **Quelle der Wahrheit gelesen.** README behauptet, Code entscheidet. Wenn der Adapter den Agenten
-   längst kennt und ihn nur nicht aufruft, ist der PR zehn Zeilen groß — nicht tausend.
-2. **Lizenz und Beitragsregeln.** CLA? DCO/`Signed-off-by`? Testpflicht? Belegpflicht für Agent-Layer?
-3. **Kleinster echter Eingriff.** Drei Varianten durchrechnen (10 / 200 / 900 Zeilen) und die kleinste
-   wählen, die den Fall löst. Große Ports erst nach Issue und Zusage des Maintainers.
-4. **Menschliches Go.** Ein PR unter fremdem Namen ist eine externe Wirkung.
+```sh
+python3 scripts/validate_record.py path/to/record.json
+python3 -m unittest discover -s tests -v
+```
 
-## Der Ablauf
+Der Validator kontrolliert Struktur und ausgewählte Zustandsregeln, etwa eine veraltete Prüf-SHA oder ein noch nicht aufgelöstes Duplikat. Er prüft **nicht**, ob eine Behauptung stimmt, eine URL existiert, Tests ausgeführt wurden oder eine Aktion genehmigt ist; er verhindert selbst keine Veröffentlichung. Siehe [record-format.md](docs/record-format.md).
 
-1. Fork per API, Klon flach und sparse (`--depth 1 --filter=blob:none --sparse`).
-2. Auf aktuellen `main` branchen, `HEAD..origin/main` prüfen.
-3. Änderung plus Test in der Repo-Konvention.
-4. **E2E durch die exportierte Funktion, nicht durch die CLI.** Ein manueller CLI-Aufruf beweist die
-   CLI. Erst der Aufruf des echten Einstiegspunkts zeigt, ob der Adapter trägt.
-5. Baseline messen: `stash` → Tests → `stash pop` → Tests.
-6. Commit-Hygiene: imperativer Titel mit Scope, CRLF-frei, kein Secret.
-7. Push, PR per REST, **zurücklesen**: state, head, Dateien, Checks.
-8. CI-Status benennen — gelaufen, `action_required`, oder nicht vorhanden.
+## Installation
 
-## Pflichten gegenüber GitHub
+Den **gesamten Repository-Inhalt** als Skill-Ordner installieren, damit relative Verweise auf Skripte und Beispiele funktionieren. Plattformabhängige Pfade und Möglichkeiten unterscheiden sich; den Anweisungen des jeweiligen Agenten folgen. Der Skill führt selbst keine GitHub-Aktionen aus und enthält keinen Bot.
 
-Automatisierung unter einem Menschenkonto ist erlaubt — die Verantwortung bleibt beim Menschen.
+## Umfang und Quellen
 
-- **Zurechnung:** „You are responsible for all content posted and activity that occurs under your
-  Account." Jede Agenten-PR ist rechtlich die PR des Kontoinhabers.
-- **Identität:** Für echte Dauer-Automatisierung ein Machine Account oder eine GitHub App, nicht das
-  persönliche Konto. Accounts, die automatisiert *registriert* werden, sind verboten.
-- **Volumen:** ≤ 80 content-generating requests pro Minute, ≤ 500 pro Stunde. Sperren drohen auch
-  „for undisclosed reasons" — Backoff statt Retry.
-- **Kein Bulk:** wiederholte unpassende PRs gelten als „coordinated inauthentic activity".
-- **Erstbeiträger:** Workflow-Läufe warten auf Freigabe und **verfallen nach 30 Tagen**. Ein PR ohne
-  CI ist kein grüner PR.
-
-## Was es nicht ist
-
-Kein Produkt, kein Bot, keine CI-Automation. Kein Werkzeug, um viele PRs zu öffnen — das ist der Fall,
-den GitHubs Regeln ausdrücklich verbieten. Es ist die Prozedur für **einen** PR, den ein Mensch
-verantworten kann.
-
-## Nutzung
-
-`SKILL.md` in den Skill-Ordner des Agenten legen (Hermes: `~/.hermes/skills/`, Claude Code:
-`~/.claude/skills/`), oder als Abschnitt in `AGENTS.md` übernehmen. `CHECKLIST.md` ist die Fassung
-zum Abhaken vor dem Öffnen.
+Die frühere Recherche ist eine begrenzte Momentaufnahme, kein Beweis für Einzigartigkeit. Siehe [docs/evidence.md](docs/evidence.md). Projektrichtlinien ändern sich: vor jedem Beitrag neu prüfen. Keine feste PR-Menge als Ziel setzen; GitHub-Limits sind keine Erlaubnis, viele Anfragen zu versenden.
 
 ## Lizenz
 
-MIT — siehe [`LICENSE`](LICENSE).
+[MIT](LICENSE)
